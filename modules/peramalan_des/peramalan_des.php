@@ -108,7 +108,10 @@
 
                             <?php
                             for ($i = 1; $i <= 3; $i++) {
+                                // a+(b*i)
                                 $des['f'][$key + $i] = $des['a'][$key] + ($i * $des['b'][$key]);
+
+
                                 $month[$i] = date('m-Y', strtotime("+$i month", strtotime($data_train[$key]['tahun'] . '-' . $data_train[$key]['bulan'] . '-1')));
                                 $gx[]  = $month[$i];
                                 $gf[] = round($des['f'][$key + $i]);
@@ -133,6 +136,9 @@
                         </tbody>
                     </table>
                 </div>
+                <strong>
+                    Rata-rata MAPE = <?= round($des['rmape'],2) ?>
+                </strong>
             <?php
             }
             ?>

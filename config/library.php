@@ -12,15 +12,19 @@ function des($x = array())
         $x[] = 170;
     }
 
-
     $n = count($x);
     $alpha = 2 / ($n + 1);
+    // $alpha = 0.1;
 
     $sa = [];
     $saa = [];
+    // (2 * $sa[$t]) - $saa[$t];
     $a = [];
+    // (($alpha) / (1 - $alpha)) * ($sa[$t] - $saa[$t]);
     $b = [];
+    //peramalan a+b
     $f = [];
+    $fx = 0;
 
     foreach ($x as $t => $value) {
         if ($t == 0) {
@@ -30,16 +34,22 @@ function des($x = array())
             $b[$t] = 0;
             $f[$t] = 0;
         } else if ($t == 1) {
+            // single
             $sa[$t] = ($alpha * $x[$t]) + ((1 - $alpha) * $sa[($t - 1)]);
+// double
             $saa[$t] = ($alpha * $sa[$t]) + ((1 - $alpha) * $saa[($t - 1)]);
             $a[$t] = (2 * $sa[$t]) - $saa[$t];
             $b[$t] = (($alpha) / (1 - $alpha)) * ($sa[$t] - $saa[$t]);
+
+
             $f[$t] = 0;
         } else {
             $sa[$t] = ($alpha * $x[$t]) + ((1 - $alpha) * $sa[($t - 1)]);
             $saa[$t] = ($alpha * $sa[$t]) + ((1 - $alpha) * $saa[($t - 1)]);
             $a[$t] = (2 * $sa[$t]) - $saa[$t];
             $b[$t] = (($alpha) / (1 - $alpha)) * ($sa[$t] - $saa[$t]);
+
+
             $f[$t] = $a[$t] + $b[$t];
         }
 
@@ -52,7 +62,11 @@ function des($x = array())
             $mse[$t] =  pow(($value - $f[$t]), 2);
         }
 
+        // selisih dibagi nilai aktual
         $mape[$t] = ($mad[$t] / $value) * 100;
+        if ($f > 0) {
+            $fx++;
+        }
     }
 
 
@@ -68,6 +82,9 @@ function des($x = array())
     $data['mad'] = $mad;
     $data['mse'] = $mse;
     $data['mape'] = $mape;
+    $data['rmse'] = array_sum($mse) / $fx;
+    $data['mape'] = $mape;
+    $data['rmape'] = array_sum($mape) / $fx;
 
     return $data;
 }
@@ -167,9 +184,9 @@ function dma($x = array(), $n = 3)
     $data['f'] = $f;
     $data['mad'] = $mad;
     $data['mse'] = $mse;
-    $data['rmse'] = $mse/$fx;
+    $data['rmse'] = array_sum($mse)/$fx;
     $data['mape'] = $mape;
-    $data['rmape'] = $mape/$fx;
+    $data['rmape'] = array_sum($mape)/$fx;
 
     return $data;
 }

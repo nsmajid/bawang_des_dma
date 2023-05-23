@@ -45,11 +45,10 @@
             <br>
             <?php
             if ($_GET['provinsi']) {
-
                 $id_provinsi = $_GET['provinsi'];
+                // echo  $id_provinsi;
                 $n = 3;
-                $query = mysqli_query($connection, "SELECT COUNT(id_harga_komoditas) AS record,AVG(harga) AS average,MAX(harga) AS max,MIN(harga) AS min, MONTH(tanggal) AS bulan, YEAR(tanggal) AS tahun FROM harga_komoditas WHERE id_provinsi = $id_provinsi AND id_komoditas = $id_komoditas GROUP BY YEAR(tanggal), MONTH(tanggal) ORDER BY tahun, bulan");
-                // $no = 1;
+                $query = mysqli_query($connection, "SELECT COUNT(id_harga_komoditas) AS record, AVG(harga) AS average,MAX(harga) AS max,MIN(harga) AS min, MONTH(tanggal) AS bulan, YEAR(tanggal) AS tahun FROM harga_komoditas WHERE id_provinsi = '$id_provinsi' AND id_komoditas = '$id_komoditas' GROUP BY YEAR(tanggal), MONTH(tanggal) ORDER BY tahun, bulan");                // $no = 1;
                 $x = [];
                 $data_train = [];
                 while ($row = mysqli_fetch_array($query)) {
@@ -133,13 +132,16 @@
                         </tbody>
                     </table>
                 </div>
-
+                <strong>
+                    Rata-rata MAPE = <?= round($dma['rmape'],2) ?>
+                </strong>
             <?php
             }
             ?>
 
         </div>
     </div>
+
 </div>
 
 <?php
