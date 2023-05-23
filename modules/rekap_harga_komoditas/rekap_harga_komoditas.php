@@ -21,7 +21,7 @@ switch ($action) {
 
                             while ($row = mysqli_fetch_array($query)) {
                             ?>
-                                <option value="<?= $row['id_provinsi'] ?>" <?= $_GET['provinsi']== $row['id_provinsi']?'selected':null?> ><?= $row['nama_provinsi'] ?></option>
+                                <option value="<?= $row['id_provinsi'] ?>" <?= $_GET['provinsi'] == $row['id_provinsi'] ? 'selected' : null ?>><?= $row['nama_provinsi'] ?></option>
                             <?php
                             }
                             ?>
@@ -63,10 +63,10 @@ switch ($action) {
                                             <td>
                                                 <div class="btn-group" role="group">
 
-                                                    <a href="?module=<?= $module ?>&action=edit&id=<?= $row['id_komoditas']; ?>" type="button" class="btn btn-outline-secondary btn-sm" data-toggle="tooltip" data-placement="top" title="Edit">
+                                                    <a href="?module=<?= $module ?>&action=edit&id=<?= $row['id_harga_komoditas']; ?>" type="button" class="btn btn-outline-secondary btn-sm" data-toggle="tooltip" data-placement="top" title="Edit">
                                                         <i class="mdi mdi-pencil"></i>
                                                     </a>
-                                                    <a href="<?= $query_model ?>&action=delete&id=<?= $row['id_komoditas']; ?>" onClick="return confirm('Apa Anda yakin??');" type="button" class="btn btn-outline-secondary btn-sm" data-toggle="tooltip" data-placement="top" title="Delete">
+                                                    <a href="<?= $query_model ?>&action=delete&id=<?= $row['id_harga_komoditas']; ?>" onClick="return confirm('Apa Anda yakin??');" type="button" class="btn btn-outline-secondary btn-sm" data-toggle="tooltip" data-placement="top" title="Delete">
                                                         <i class="mdi mdi-trash-can"></i>
                                                     </a>
                                                 </div>
@@ -104,8 +104,45 @@ switch ($action) {
 
                     <form class="custom-validation" action="<?= $query_model ?>&action=insert" method="POST">
                         <div class="form-group">
-                            <label>Nama Komoditas</label>
-                            <input type="text" name="nama_komoditas" class="form-control" required placeholder="Type something" />
+                            <label>Provinsi</label>
+                            <select name="id_provinsi" id="id_provinsi" class="form-control" required>
+                                <option value="">Pilih Provinsi</option>
+                                <?php
+                                $query_provinsi = mysqli_query($connection, "SELECT * FROM provinsi ORDER BY nama_provinsi");
+
+                                while ($rowp = mysqli_fetch_array($query_provinsi)) {
+                                ?>
+                                    <option value="<?= $rowp['id_provinsi'] ?>"><?= $rowp['nama_provinsi'] ?></option>
+
+                                <?php
+                                }
+                                ?>
+                            </select>
+
+                        </div>
+                        <div class="form-group">
+                            <label> Komoditas</label>
+                            <select name="id_komoditas" id="id_komoditas" class="form-control" required>
+                                <option value="">Pilih Komoditas</option>
+                                <?php
+                                $query_komoditas = mysqli_query($connection, "SELECT * FROM komoditas ORDER BY nama_komoditas");
+
+                                while ($rowk = mysqli_fetch_array($query_komoditas)) {
+                                ?>
+                                    <option value="<?= $rowk['id_komoditas'] ?>"><?= $rowk['nama_komoditas'] ?></option>
+
+                                <?php
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Tanggal</label>
+                            <input type="date" name="tanggal" class="form-control" required placeholder="Type something" />
+                        </div>
+                        <div class="form-group">
+                            <label>Harga</label>
+                            <input type="number" name="harga" class="form-control" required placeholder="Type something" />
                         </div>
 
 
@@ -129,7 +166,7 @@ switch ($action) {
 
         // Form Edit Kriteria
     case "edit":
-        $query = mysqli_query($connection, "SELECT * FROM komoditas WHERE id_komoditas='$_GET[id]'");
+        $query = mysqli_query($connection, "SELECT * FROM harga_komoditas WHERE id_harga_komoditas='$_GET[id]'");
         $row = mysqli_fetch_array($query);
     ?>
         <div class="col-lg-6">
@@ -141,13 +178,50 @@ switch ($action) {
 
                     <form class="custom-validation" action="<?= $query_model ?>&action=update" method="POST">
                         <div class="form-group">
-                            <label>Nama Komoditas</label>
-                            <input type="text" name="nama_komoditas" class="form-control" required placeholder="Type something" value="<?= $row['nama_komoditas'] ?>" />
+                            <label>Provinsi</label>
+                            <select name="id_provinsi" id="id_provinsi" class="form-control" required>
+                                <option value="">Pilih Provinsi</option>
+                                <?php
+                                $query_provinsi = mysqli_query($connection, "SELECT * FROM provinsi ORDER BY nama_provinsi");
+
+                                while ($rowp = mysqli_fetch_array($query_provinsi)) {
+                                ?>
+                                    <option value="<?= $rowp['id_provinsi'] ?>" <?= $rowp['id_provinsi'] == $row['id_provinsi'] ? 'selected' : null ?>><?= $rowp['nama_provinsi'] ?></option>
+
+                                <?php
+                                }
+                                ?>
+                            </select>
+
+                        </div>
+                        <div class="form-group">
+                            <label> Komoditas</label>
+                            <select name="id_komoditas" id="id_komoditas" class="form-control" required>
+                                <option value="">Pilih Komoditas</option>
+                                <?php
+                                $query_komoditas = mysqli_query($connection, "SELECT * FROM komoditas ORDER BY nama_komoditas");
+
+                                while ($rowk = mysqli_fetch_array($query_komoditas)) {
+                                ?>
+                                    <option value="<?= $rowk['id_komoditas'] ?>" <?= $rowk['id_komoditas']== $row['id_komoditas']?'selected':null ?>><?= $rowk['nama_komoditas'] ?></option>
+
+                                <?php
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Tanggal</label>
+                            <input type="date" name="tanggal" class="form-control" required value="<?= $row['tanggal'] ?>" />
+                        </div>
+                        <div class="form-group">
+                            <label>Harga</label>
+                            <input type="number" name="harga" class="form-control" required value="<?= $row['harga'] ?>" />
                         </div>
 
 
                         <div class="form-group mb-0">
-                            <input type="hidden" name="id_komoditas" class="form-control" required placeholder="Type something" value="<?= $row['id_komoditas'] ?>" />
+                            <input type="hidden" name="id_komoditas" class="form-control" required value="<?= $row['id_harga_komoditas'] ?>" />
 
                             <div>
                                 <button type="submit" class="btn btn-primary waves-effect waves-light mr-1">
