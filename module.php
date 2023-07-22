@@ -117,11 +117,11 @@ $action_name = isset($_GET['action']) ? str_replace('_', ' ', ucwords($_GET['act
                                             Komoditas
                                         </a>
                                     </li>
-                                    <li class="nav-item">
+                                    <!-- <li class="nav-item">
                                         <a class="nav-link" href="module.php?module=provinsi">
                                             Provinsi
                                         </a>
-                                    </li>
+                                    </li> -->
                                     <li class="nav-item">
                                         <a class="nav-link" href="module.php?module=rekap_harga_komoditas">
                                             Rekap Harga Komoditas

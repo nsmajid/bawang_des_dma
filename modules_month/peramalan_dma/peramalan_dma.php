@@ -2,11 +2,23 @@
     <div class="card">
         <div class="card-body">
             <?php
+            $harga = $_GET['harga'] ?? 'average';
             $id_komoditas = $_GET['id_komoditas'] ?? 1;
             ?>
             <h4 class="header-title"> <?= $module_name ?></h4>
             <form class="mt-4" action="">
-                
+                <select class="form-control mb-4" name="provinsi" id="">
+                    <option value="">Pilih Provinsi</option>
+                    <?php
+                    $query = mysqli_query($connection, "SELECT * FROM provinsi ORDER BY nama_provinsi");
+
+                    while ($row = mysqli_fetch_array($query)) {
+                    ?>
+                        <option value="<?= $row['id_provinsi'] ?>" <?= $_GET['provinsi'] == $row['id_provinsi'] ? 'selected' : null ?>><?= $row['nama_provinsi'] ?></option>
+                    <?php
+                    }
+                    ?>
+                </select>
                 <select class="form-control mb-4" name="id_komoditas" id="">
                     <?php
                     $query = mysqli_query($connection, "SELECT * FROM komoditas ORDER BY nama_komoditas");
@@ -18,6 +30,13 @@
                     }
                     ?>
                 </select>
+
+
+                <select class="form-control mb-4" name="harga" id="">
+                    <option value="average" <?= $harga == 'average' ? 'selected' : null ?>>Harga Rata-Rata Bulanan</option>
+                    <option value="max" <?= $harga == 'max' ? 'selected' : null ?>>Harga Tertinggi Bulanan</option>
+                    <option value="min" <?= $harga == 'min' ? 'selected' : null ?>>Harga Terendah Bulanan</option>
+                </select>
                 <input type="hidden" name="module" value="peramalan_dma">
                 <a href="?module=peramalan_dma" type="button" class="btn btn-dark">Reset</a>
                 <button type="submit" class="btn btn-primary">Hitung Peramalan DMA</button>
@@ -25,19 +44,22 @@
 
             <br>
             <?php
-            if ($_GET['id_komoditas']) {
-             
+            if ($_GET['provinsi']) {
+                $id_provinsi = $_GET['provinsi'];
+                // echo  $id_provinsi;
                 $n = 3;
-                $query = mysqli_query($connection, "SELECT * FROM harga_komoditas WHERE id_komoditas = '$id_komoditas' ORDER BY tanggal");                // $no = 1;
+                $query = mysqli_query($connection, "SELECT COUNT(id_harga_komoditas) AS record, AVG(harga) AS average,MAX(harga) AS max,MIN(harga) AS min, MONTH(tanggal) AS bulan, YEAR(tanggal) AS tahun FROM harga_komoditas WHERE id_provinsi = '$id_provinsi' AND id_komoditas = '$id_komoditas' GROUP BY YEAR(tanggal), MONTH(tanggal) ORDER BY tahun, bulan");                // $no = 1;
                 $x = [];
                 $data_train = [];
                 while ($row = mysqli_fetch_array($query)) {
-                    $x[] = $row['harga'];
+                    $x[] = $row[$harga];
                     $data_train[] = $row;
                 }
-                // print_r($x);
-                // die;
                 $dma = dma($x, $n);
+                // echo "<pre>";
+                // print_r($dma);
+
+                // echo "</pre>";
 
             ?>
                 <div class="table-responsive">
@@ -45,7 +67,7 @@
                         <thead class="thead-light">
                             <tr>
                                 <th>t</th>
-                                <th>Tanggal</th>
+                                <th>Bulan</th>
                                 <th>X</th>
                                 <th>S'</th>
                                 <th>S''</th>
@@ -62,12 +84,12 @@
                             $gx = [];
                             $gf = [];
                             foreach ($dma['x'] as $key => $value) {
-                                $gx[] =  $data_train[$key]['tanggal'];
+                                $gx[] =  $data_train[$key]['bulan'] . '-' . $data_train[$key]['tahun'];
                                 $gf[] = $key > $n ? round($dma['f'][$key]) : null;
                             ?>
                                 <tr>
                                     <th scope="row"><?= $key + 1 ?></th>
-                                    <td><?= $data_train[$key]['tanggal']  ?></td>
+                                    <td><?= $data_train[$key]['bulan'] . '-' . $data_train[$key]['tahun'] ?></td>
                                     <td><?= rupiah($value)  ?></td>
                                     <td><?= round($dma['sa'][$key], 2) ?></td>
                                     <td><?= round($dma['saa'][$key], 2) ?></td>
@@ -86,13 +108,13 @@
                             <?php
                             for ($i = 1; $i <= 3; $i++) {
                                 $dma['f'][$key + $i] = $dma['a'][$key] + ($i * $dma['b'][$key]);
-                                $date[$i] = date('Y-m-d', strtotime("+$i day", strtotime($data_train[$key]['tanggal'])));
-                                $gx[]  = $date[$i];
+                                $month[$i] = date('m-Y', strtotime("+$i month", strtotime($data_train[$key]['tahun'] . '-' . $data_train[$key]['bulan'] . '-1')));
+                                $gx[]  = $month[$i];
                                 $gf[] = round($dma['f'][$key + $i]);
                             ?>
                                 <tr style="color: red;">
                                     <th scope="row"><?= $key + 1 + $i ?></th>
-                                    <td><?= $date[$i] ?></td>
+                                    <td><?= $month[$i] ?></td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
@@ -113,10 +135,6 @@
                 <strong>
                     Rata-rata MAPE = <?= round($dma['rmape'],2) ?>
                 </strong>
-                <hr>
-                <strong>
-                    Rata-rata MSE = <?= round($dma['rmse'],2) ?>
-                </strong>
             <?php
             }
             ?>
@@ -127,7 +145,7 @@
 </div>
 
 <?php
-if ($_GET['id_komoditas']) {
+if ($_GET['provinsi']) {
 ?>
     <div class="col-xl-12">
         <div class="card">

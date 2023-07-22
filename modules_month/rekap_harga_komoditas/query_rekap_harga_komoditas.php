@@ -15,13 +15,13 @@ if ($action == 'delete') {
 // Insert
 elseif ($action == 'insert') {
 
-    $sql = "INSERT INTO harga_komoditas(id_komoditas,tanggal,harga) VALUES('$_POST[id_komoditas]','$_POST[tanggal]','$_POST[harga]')";
+    $sql = "INSERT INTO harga_komoditas(id_provinsi,id_komoditas,tanggal,harga) VALUES('$_POST[id_provinsi]','$_POST[id_komoditas]','$_POST[tanggal]','$_POST[harga]')";
 }
 
 // Update 
 elseif ($action == 'update') {
 
-    $sql = "UPDATE harga_komoditas SET id_komoditas = '$_POST[id_komoditas]',tanggal = '$_POST[tanggal]',harga = '$_POST[harga]' WHERE id_harga_komoditas='$_POST[id_harga_komoditas]'";
+    $sql = "UPDATE harga_komoditas SET id_provinsi = '$_POST[id_provinsi]',id_komoditas = '$_POST[id_komoditas]',tanggal = '$_POST[tanggal]',harga = '$_POST[harga]' WHERE id_harga_komoditas='$_POST[id_harga_komoditas]'";
 }
 
 // execute

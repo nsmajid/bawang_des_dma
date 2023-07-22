@@ -9,19 +9,19 @@ $action = $_GET['action'] ? $_GET['action'] : NULL;
 // Delete
 if ($action == 'delete') {
 
-    $sql = "DELETE FROM harga_komoditas WHERE id_harga_komoditas='$_GET[id]'";
+    $sql = "DELETE FROM provinsi WHERE id_provinsi='$_GET[id]'";
 }
 
 // Insert
 elseif ($action == 'insert') {
 
-    $sql = "INSERT INTO harga_komoditas(id_komoditas,tanggal,harga) VALUES('$_POST[id_komoditas]','$_POST[tanggal]','$_POST[harga]')";
+    $sql = "INSERT INTO provinsi(nama_provinsi) VALUES('$_POST[nama_provinsi]')";
 }
 
 // Update 
 elseif ($action == 'update') {
 
-    $sql = "UPDATE harga_komoditas SET id_komoditas = '$_POST[id_komoditas]',tanggal = '$_POST[tanggal]',harga = '$_POST[harga]' WHERE id_harga_komoditas='$_POST[id_harga_komoditas]'";
+    $sql = "UPDATE provinsi SET nama_provinsi = '$_POST[nama_provinsi]' WHERE id_provinsi='$_POST[id_provinsi]'";
 }
 
 // execute
