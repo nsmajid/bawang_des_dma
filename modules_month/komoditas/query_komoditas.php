@@ -9,19 +9,19 @@ $action = $_GET['action'] ? $_GET['action'] : NULL;
 // Delete
 if ($action == 'delete') {
 
-    $sql = "DELETE FROM harga_komoditas WHERE id_harga_komoditas='$_GET[id]'";
+    $sql = "DELETE FROM komoditas WHERE id_komoditas='$_GET[id]'";
 }
 
 // Insert
 elseif ($action == 'insert') {
 
-    $sql = "INSERT INTO harga_komoditas(id_komoditas,tanggal,harga) VALUES('$_POST[id_komoditas]','$_POST[tanggal]','$_POST[harga]')";
+    $sql = "INSERT INTO komoditas(nama_komoditas) VALUES('$_POST[nama_komoditas]')";
 }
 
 // Update 
 elseif ($action == 'update') {
 
-    $sql = "UPDATE harga_komoditas SET id_komoditas = '$_POST[id_komoditas]',tanggal = '$_POST[tanggal]',harga = '$_POST[harga]' WHERE id_harga_komoditas='$_POST[id_harga_komoditas]'";
+    $sql = "UPDATE komoditas SET nama_komoditas = '$_POST[nama_komoditas]' WHERE id_komoditas='$_POST[id_komoditas]'";
 }
 
 // execute
